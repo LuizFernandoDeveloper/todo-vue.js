@@ -1,47 +1,60 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+  import { reactive } from 'vue';
+  import Header from './components/Header.vue';
+  import Form from './components/Form.vue';
+  import ListTask from './components/ListTask.vue' 
+  const state  = reactive({
+    filter: "todas",
+    taskTemp:'',
+    task:[],
+  });
+
+  const getTaskPending = () => {
+    return state.task.filter(task => !task.stateOfTask);
+  };
+
+  const getTaskFinished = () => {
+    return state.task.filter(task => task.stateOfTask);
+  };
+
+  const getTaskFilter = () => {
+    const {filter} = state;
+    switch(filter){
+      case 'Pendentes':
+        return getTaskPending();
+      case 'Finalizadas':
+        return getTaskFinished();
+      default:
+        return state.task;
+    };
+  };
+
+  const registerTask = () => {
+
+    const newTask = {
+      title: state.taskTemp,
+      stateOfTask: false
+    }
+    alert('entrou')
+    state.task.push(newTask);
+    state.taskTemp = '';
+  }
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="container">
+    <Header v-bind:task-pending="getTaskPending().length"></Header>
+    <Form 
+    :register-task="registerTask"
+    :task-temp="state.taskTemp" 
+    :edit-task-temp="event => state.taskTemp = event.target.value" 
+    :to-change-filter="event => state.filter = event.target.value"></Form>
+    <ListTask :task="getTaskFilter()"></ListTask> 
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.del{
+  text-decoration: line-through;
 }
 </style>
