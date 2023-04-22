@@ -35,7 +35,6 @@
       title: state.taskTemp,
       stateOfTask: false
     }
-    alert('entrou')
     state.task.push(newTask);
     state.taskTemp = '';
   }
